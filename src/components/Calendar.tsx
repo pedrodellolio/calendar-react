@@ -32,7 +32,6 @@ function Calendar(props: Props) {
     });
     return;
   }
-  console.log([...Array(getDaysInMonth(currentMonth, currentYear))]);
 
   return (
     <div
