@@ -2,15 +2,24 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { getMonthName } from "../constants/monthNames";
 
+interface CalendarTask {
+  id: number;
+  title: string;
+  description: string | null;
+  startDate: Date;
+  endDate: Date;
+}
+
 interface Props {
   dayOfMonth: number;
   monthOfYear: number;
+  tasks: CalendarTask[];
   //   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DayCard(props: Props) {
   let [isOpen, setIsOpen] = useState(false);
-
+  // console.log(props.tasks);
   function closeModal() {
     setIsOpen(false);
   }
@@ -24,11 +33,17 @@ function DayCard(props: Props) {
   return (
     <div className="">
       <div onClick={openModal} className="DayCard border border-black-300 h-44">
-        <div className="flex justify-end p-1 px-3 w-full">
+        <div className="flex flex-col justify-end p-1 px-3 w-full">
           <span className="text-gray-800 font-normal">{props.dayOfMonth}</span>
+          {props.tasks.map((task, i) => {
+            return (
+              <div title={task.title} className="mt-2 bg-green-300 rounded-lg">
+                <p className="p-2 text-xs whitespace-nowrap truncate">{task.title}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
-
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
@@ -72,7 +87,10 @@ function DayCard(props: Props) {
                           {getMonthName(props.monthOfYear)}, {props.dayOfMonth}
                         </p>
                         <div className="mx-3">
-                          <input className="border text-center" type="time"></input>
+                          <input
+                            className="border text-center"
+                            type="time"
+                          ></input>
                           <span className="mx-2">-</span>
                           <input className="border" type="time"></input>
                         </div>
