@@ -1,8 +1,10 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
+import { getMonthName } from "../constants/monthNames";
 
 interface Props {
   dayOfMonth: number;
+  monthOfYear: number;
   //   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -21,10 +23,7 @@ function DayCard(props: Props) {
 
   return (
     <div className="">
-      <div
-        onClick={openModal}
-        className="DayCard border border-black-300 h-44"
-      >
+      <div onClick={openModal} className="DayCard border border-black-300 h-44">
         <div className="flex justify-end p-1 px-3 w-full">
           <span className="text-gray-800 font-normal">{props.dayOfMonth}</span>
         </div>
@@ -61,19 +60,22 @@ function DayCard(props: Props) {
                       as="h3"
                       className="mb-8 text-lg font-medium leading-6 text-gray-900"
                     >
-                      Day {props.dayOfMonth} -
                       <input
                         className="mx-2"
                         placeholder="New appointment"
+                        autoFocus
                       ></input>
                     </Dialog.Title>
                     <div className="mt-2">
-                      <div className="mb-8">
-                        Day {props.dayOfMonth}{" "}
-                        <input className="border" type="time"></input>
-                        <span className="mx-2">-</span>
-                        Day {props.dayOfMonth}{" "}
-                        <input className="border" type="time"></input>
+                      <div className="mb-8 flex">
+                        <p>
+                          {getMonthName(props.monthOfYear)}, {props.dayOfMonth}
+                        </p>
+                        <div className="mx-3">
+                          <input className="border text-center" type="time"></input>
+                          <span className="mx-2">-</span>
+                          <input className="border" type="time"></input>
+                        </div>
                       </div>
                       <div className="mb-8">
                         <label className="block">Description</label>

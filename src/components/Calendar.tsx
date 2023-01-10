@@ -62,6 +62,7 @@ function Calendar(props: Props) {
           <DayCard
             // setIsModalOpen={setIsModalOpen}
             key={i + 1}
+            monthOfYear={currentMonth}
             dayOfMonth={i + 1}
           />
         ))}
