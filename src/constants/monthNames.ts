@@ -1,7 +1,7 @@
-export const monthNames = ["January", "February", "March", "April", "May", "June",
+export const MONTHS = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 
 export function getMonthName(month: number) {
-    return monthNames[month];
+    return MONTHS[month];
 }

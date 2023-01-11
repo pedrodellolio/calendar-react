@@ -14,7 +14,6 @@ export interface CalendarTask {
 export interface Month {
   number: number;
   name: string;
-  daysInMonth: Day[];
 }
 
 export interface Day {

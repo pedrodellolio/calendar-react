@@ -1,5 +1,4 @@
 import { Dialog, Transition } from "@headlessui/react";
-import axios from "axios";
 import { Fragment, useState } from "react";
 import { postTask } from "../api/services/TaskService";
 import { getMonthName } from "../constants/monthNames";
@@ -10,7 +9,7 @@ interface Props {
   dayOfMonth: number;
   monthOfYear: number;
   tasks: CalendarTask[];
-  refreshCurrentMonth: () => void;
+  updateCurrentMonth: (index: number) => void;
 }
 
 function DayCard(props: Props) {
@@ -49,6 +48,13 @@ function DayCard(props: Props) {
         minimumIntegerDigits: 2,
       })}T${event.target.value}`
     );
+    console.log(
+      `${props.currentYear}-${props.monthOfYear.toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+      })}-${props.dayOfMonth.toLocaleString("en-US", {
+        minimumIntegerDigits: 2,
+      })}T${event.target.value}`
+    );
     option === 1
       ? setCurrentTask((prevState) => {
           return { ...prevState, startDate: new Date(ms) };
@@ -72,8 +78,9 @@ function DayCard(props: Props) {
 
   const saveTask = (event: any) => {
     event.preventDefault();
+    console.log(currentTask);
     postTask(currentTask).then(() => {
-      props.refreshCurrentMonth();
+      props.updateCurrentMonth(props.monthOfYear);
     });
     closeModal();
   };
@@ -83,19 +90,21 @@ function DayCard(props: Props) {
       <div onClick={openModal} className="DayCard border border-black-300 h-44">
         <div className="flex flex-col justify-end p-1 px-3 w-full">
           <span className="text-gray-800 font-normal">{props.dayOfMonth}</span>
-          {props.tasks.map((task, i) => {
-            return (
-              <div
-                key={i}
-                title={task.title}
-                className="mt-2 bg-green-300 rounded-lg"
-              >
-                <p className="p-2 text-xs whitespace-nowrap truncate">
-                  {task.title}
-                </p>
-              </div>
-            );
-          })}
+          <div>
+            {props.tasks.map((task, i) => {
+              return (
+                <div
+                  key={i}
+                  title={task.title}
+                  className="mt-2 bg-green-300 rounded-lg"
+                >
+                  <p className="p-2 text-xs whitespace-nowrap truncate">
+                    {task.title}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
       <Transition appear show={isOpen} as={Fragment}>

@@ -1,10 +1,13 @@
 import axios from "axios";
 import { CalendarTask } from "../../models/models";
 
-const API_URL = "";
+export const API_URL = "";
 export const postTask = async (task: CalendarTask) => {
   try {
-    await axios.post(API_URL, task);
+    console.log(task);
+    const response = await axios.post(API_URL, task);
+    const data = await response.data;
+    return data;
   } catch (error) {
     console.log(error);
   }
