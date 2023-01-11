@@ -28,9 +28,10 @@ interface DayTasks {
 }
 
 const MONTH_COUNT = 12;
+const DEFAULT_TIMEOUT = 300;
 
 function Calendar() {
-  let [monthsRendered, setMonthsRendered] = useState<boolean>(false);
+  let [currentMonthRendered, setCurrentMonthRendered] = useState<boolean>(false);
   let [currentYear, setCurrentYear] = useState<number>(2023);
   let [months, setMonths] = useState<Month[]>([]);
   let [currentMonth, setCurrentMonth] = useState<Month>({
@@ -42,7 +43,7 @@ function Calendar() {
   const getTasksByDate = async (date: Date) => {
     try {
       const response = await fetch(
-        "" + date.toISOString()
+        "https://localhost:7191/api/Calendar?date=" + date.toISOString()
       );
       const data = await response.json();
       return data;
@@ -84,8 +85,8 @@ function Calendar() {
     if (months.length > 0) {
       setCurrentMonth(months[0]);
       setTimeout(() => {
-        setMonthsRendered(true);
-      }, 1000);
+        setCurrentMonthRendered(true);
+      }, DEFAULT_TIMEOUT);
     }
   }, [months]);
 
@@ -100,7 +101,7 @@ function Calendar() {
 
       setCurrentMonth(currMonth);
     }
-  }, [monthsRendered, setMonthsRendered, currentMonth, setCurrentMonth]);
+  }, [setCurrentMonthRendered, currentMonthRendered, currentMonth]);
 
   function getDaysInMonth(month: number, year: number): number {
     return new Date(year, month + 1, 0).getDate();
@@ -108,17 +109,19 @@ function Calendar() {
   console.log(currentMonth);
 
   function changeMonth(option: number) {
-    setMonthsRendered(false);
+    setCurrentMonthRendered(false);
     setCurrentMonth((prevState) => {
       return months[prevState.number - 1 + option];
     });
-    setMonthsRendered(true);
+    setTimeout(() => {
+      setCurrentMonthRendered(true);
+    }, DEFAULT_TIMEOUT);
   }
   return (
     <div
       className={
         "flex flex-col mt-5 px-3 m-auto " +
-        (!monthsRendered ? "opacity-70" : "opacity-100")
+        (!currentMonthRendered ? "opacity-70" : "opacity-100")
       }
     >
       <div>
