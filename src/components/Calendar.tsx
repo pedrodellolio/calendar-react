@@ -1,56 +1,20 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState } from "react";
+import { getTasksByDate } from "../api/services/TaskService";
+import { DEFAULT_TIMEOUT, MONTH_COUNT } from "../constants/common";
 import { getMonthName } from "../constants/monthNames";
+import { Day, Month } from "../models/models";
 import DayCard from "./DayCard";
-import { Dialog, Transition } from "@headlessui/react";
-
-interface CalendarTask {
-  id: number;
-  title: string;
-  description: string | null;
-  startDate: Date;
-  endDate: Date;
-}
-
-interface Month {
-  number: number;
-  name: string;
-  daysInMonth: Day[];
-}
-
-interface Day {
-  id: number;
-  number: number;
-  tasks: CalendarTask[];
-}
-
-interface DayTasks {
-  tasks: CalendarTask[];
-}
-
-const MONTH_COUNT = 12;
-const DEFAULT_TIMEOUT = 300;
 
 function Calendar() {
-  let [currentMonthRendered, setCurrentMonthRendered] = useState<boolean>(false);
+  let [currentMonthRendered, setCurrentMonthRendered] =
+    useState<boolean>(false);
   let [currentYear, setCurrentYear] = useState<number>(2023);
-  let [months, setMonths] = useState<Month[]>([]);
+  let [months, setMonths] = useState([] as Month[]);
   let [currentMonth, setCurrentMonth] = useState<Month>({
     number: 0,
     name: "",
     daysInMonth: [],
   });
-
-  const getTasksByDate = async (date: Date) => {
-    try {
-      const response = await fetch(
-        "https://localhost:7191/api/Calendar?date=" + date.toISOString()
-      );
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     const generateMonths = () => {
@@ -103,10 +67,15 @@ function Calendar() {
     }
   }, [setCurrentMonthRendered, currentMonthRendered, currentMonth]);
 
+  function refreshCurrentMonth() {
+    setCurrentMonth((prevState) => {
+      return { ...prevState, name: prevState.name };
+    });
+  }
+
   function getDaysInMonth(month: number, year: number): number {
     return new Date(year, month + 1, 0).getDate();
   }
-  console.log(currentMonth);
 
   function changeMonth(option: number) {
     setCurrentMonthRendered(false);
@@ -124,13 +93,16 @@ function Calendar() {
         (!currentMonthRendered ? "opacity-70" : "opacity-100")
       }
     >
+      <button type="button" onClick={refreshCurrentMonth}>
+        Refresh
+      </button>
       <div>
         <div>
           <div className=" header mb-3 flex align-middle">
             <span className="w-20">{currentMonth.name}</span>
             <div className="mx-3 mt-0">
               <button
-                disabled={currentMonth.number <= 0}
+                disabled={currentMonth.number == 1}
                 onClick={() => changeMonth(-1)}
               >
                 <span className="rounded-md border border-transparent bg-blue-100 px-1 mx-1 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 material-symbols-rounded material-symbols-rounded">
@@ -139,7 +111,7 @@ function Calendar() {
               </button>
               <button
                 type="button"
-                disabled={currentMonth.number >= 11}
+                disabled={currentMonth.number == 12}
                 onClick={() => changeMonth(1)}
               >
                 <span className="rounded-md border border-transparent bg-blue-100 px-1 py-0 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 material-symbols-rounded">
@@ -153,9 +125,11 @@ function Calendar() {
               return (
                 <DayCard
                   key={i}
+                  currentYear={currentYear}
                   monthOfYear={currentMonth.number}
                   dayOfMonth={day.number}
                   tasks={day.tasks}
+                  refreshCurrentMonth={refreshCurrentMonth}
                 />
               );
             })}
