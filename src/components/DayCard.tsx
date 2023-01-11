@@ -14,7 +14,6 @@ interface Props {
   dayOfMonth: number;
   monthOfYear: number;
   tasks: CalendarTask[];
-  //   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function DayCard(props: Props) {
@@ -37,7 +36,7 @@ function DayCard(props: Props) {
           <span className="text-gray-800 font-normal">{props.dayOfMonth}</span>
           {props.tasks.map((task, i) => {
             return (
-              <div title={task.title} className="mt-2 bg-green-300 rounded-lg">
+              <div key={i} title={task.title} className="mt-2 bg-green-300 rounded-lg">
                 <p className="p-2 text-xs whitespace-nowrap truncate">{task.title}</p>
               </div>
             );
@@ -110,6 +109,7 @@ function DayCard(props: Props) {
                         Save
                       </button>
                       <a
+                        href="#"
                         type="button"
                         className="mx-3 cursor-pointer inline-flex justify-centerpx-4 py-2 text-sm font-medium text-blue-900 "
                         onClick={closeModal}
