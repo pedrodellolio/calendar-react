@@ -1,19 +1,24 @@
 import { useState } from "react";
 import "./App.css";
-import Calendar from "./components/Calendar";
-import AppointmentModal from "./components/modal/AppointmentsModal";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 
 function App() {
-  let [isModalOpen, setIsModalOpen] = useState(false);
   return (
-    <div className="App">
-      <div className="">
-        <Calendar
-        // setIsModalOpen={setIsModalOpen}
-        />
-      </div>
-      {/* <AppointmentModal isOpen={isModalOpen} /> */}
-    </div>
+    <></>
+    // <Router>
+    //   <ul>
+    //     <li>
+    //       <Link to="/">Home</Link>
+    //     </li>
+    //     <li>
+    //       <Link to="/register">Sign in</Link>
+    //     </li>
+    //     <li>
+    //       <Link to="/login">Sign up</Link>
+    //     </li>
+    //   </ul>
+    //   {/* <Switch></Switch> */}
+    // </Router>
   );
 }
 

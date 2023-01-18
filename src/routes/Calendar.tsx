@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { API_URL } from "../api/services/TaskService";
+import DayCard from "../components/DayCard";
 import { MONTH_COUNT } from "../constants/common";
 import { MONTHS } from "../constants/monthNames";
 import { Day } from "../models/models";
-import DayCard from "./DayCard";
 
 function Calendar() {
   let [currentYear, setCurrentYear] = useState<number>(2023);
@@ -47,6 +47,10 @@ function Calendar() {
 
   function updateCurrentMonth(index: number) {
     setCurrentMonth(MONTHS[index]);
+  }
+
+  function updateDaysInCurrentMonth(days: Day[]) {
+    setDaysInCurrentMonth(days);
   }
 
   function getDaysInMonth(month: number, year: number): number {
@@ -98,12 +102,14 @@ function Calendar() {
               {daysInCurrentMonth.map((day, i) => {
                 return (
                   <DayCard
-                    key={i}
+                    key={day.id}
                     currentYear={currentYear}
                     monthOfYear={currentMonthIndex + 1}
                     dayOfMonth={day.number}
                     tasks={day.tasks}
                     updateCurrentMonth={updateCurrentMonth}
+                    daysInCurrentMonth={daysInCurrentMonth}
+                    updateDaysInCurrentMonth={updateDaysInCurrentMonth}
                   />
                 );
               })}

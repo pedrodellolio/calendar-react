@@ -1,14 +1,21 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import { postTask } from "../api/services/TaskService";
+import {
+  deleteTask,
+  getTaskById,
+  postTask,
+  updateTask,
+} from "../api/services/TaskService";
 import { getMonthName } from "../constants/monthNames";
-import { CalendarTask } from "../models/models";
+import { CalendarTask, Day } from "../models/models";
 
 interface Props {
   currentYear: number;
   dayOfMonth: number;
   monthOfYear: number;
   tasks: CalendarTask[];
+  daysInCurrentMonth: Day[];
+  updateDaysInCurrentMonth: (daysInCurrentMonth: Day[]) => void;
   updateCurrentMonth: (index: number) => void;
 }
 
@@ -20,35 +27,30 @@ function DayCard(props: Props) {
     description: "",
     startDate: new Date(),
     endDate: new Date(),
-    user: { id: 1, name: "Pedro" },
+    user: { username: "Pedro" },
   } as CalendarTask);
 
   function closeModal() {
     setIsOpen(false);
   }
 
-  function openModal() {
-    var task = {
-      id: 0,
-      title: "",
-      description: "",
-      startDate: new Date(),
-      endDate: new Date(),
-      user: { id: 1, name: "Pedro" },
-    } as CalendarTask;
+  function openModal(task: CalendarTask | null = null) {
+    if (task == null) {
+      task = {
+        id: 0,
+        title: "",
+        description: "",
+        startDate: new Date(),
+        endDate: new Date(),
+        user: { username: "Pedro" },
+      } as CalendarTask;
+    }
     setCurrentTask(task);
     setIsOpen(true);
   }
 
   const handleDateInput = (option: number, event: any) => {
     var ms = Date.parse(
-      `${props.currentYear}-${props.monthOfYear.toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-      })}-${props.dayOfMonth.toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-      })}T${event.target.value}`
-    );
-    console.log(
       `${props.currentYear}-${props.monthOfYear.toLocaleString("en-US", {
         minimumIntegerDigits: 2,
       })}-${props.dayOfMonth.toLocaleString("en-US", {
@@ -76,27 +78,59 @@ function DayCard(props: Props) {
     });
   };
 
-  const saveTask = (event: any) => {
+  const saveOrUpdateTask = (event: any) => {
     event.preventDefault();
-    console.log(currentTask);
-    postTask(currentTask).then(() => {
+    if (currentTask.id === 0) {
+      // currentTask.userId = currentTask.user.id;
+      console.log(currentTask);
+      postTask(currentTask).then((task) => {
+        if (task != null) {
+          console.log(task);
+          const daysInCurrentMonth = props.daysInCurrentMonth;
+          daysInCurrentMonth[props.dayOfMonth].tasks.push(task);
+
+          props.updateDaysInCurrentMonth(daysInCurrentMonth);
+        }
+
+        props.updateCurrentMonth(props.monthOfYear);
+      });
+    } else {
+      updateTask(currentTask);
+    }
+    closeModal();
+  };
+
+  const removeTask = () => {
+    deleteTask(currentTask.id).then(() => {
       props.updateCurrentMonth(props.monthOfYear);
     });
     closeModal();
   };
 
+  const handleTaskClick = async (taskId: number) => {
+    const task = await getTaskById(taskId);
+    // console.log(task);
+    openModal(task);
+  };
+
   return (
     <div className="">
-      <div onClick={openModal} className="DayCard border border-black-300 h-44">
+      <div className="DayCard border border-black-300 h-44">
         <div className="flex flex-col justify-end p-1 px-3 w-full">
-          <span className="text-gray-800 font-normal">{props.dayOfMonth}</span>
+          <span
+            onClick={() => openModal()}
+            className="cursor-pointer text-gray-800 font-normal"
+          >
+            {props.dayOfMonth}
+          </span>
           <div>
             {props.tasks.map((task, i) => {
               return (
                 <div
-                  key={i}
+                  onClick={() => handleTaskClick(task.id)}
+                  key={task.id}
                   title={task.title}
-                  className="mt-2 bg-green-300 rounded-lg"
+                  className="cursor-pointer mt-2 bg-green-300 rounded-lg"
                 >
                   <p className="p-2 text-xs whitespace-nowrap truncate">
                     {task.title}
@@ -133,7 +167,7 @@ function DayCard(props: Props) {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-md bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <form onSubmit={saveTask}>
+                  <form onSubmit={saveOrUpdateTask}>
                     <Dialog.Title
                       as="h3"
                       className="mb-8 text-lg font-medium leading-6 text-gray-900"
@@ -189,6 +223,14 @@ function DayCard(props: Props) {
                         onClick={closeModal}
                       >
                         Close
+                      </a>
+                      <a
+                        href="#"
+                        type="button"
+                        className="mx-3 cursor-pointer inline-flex justify-centerpx-4 py-2 text-sm font-medium text-blue-900 "
+                        onClick={removeTask}
+                      >
+                        Delete
                       </a>
                     </div>
                   </form>
