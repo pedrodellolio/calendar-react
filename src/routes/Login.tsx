@@ -1,16 +1,26 @@
 import { useState } from "react";
-import authService from "../api/services/AuthService";
-import { User } from "../models/models";
+import { useAuth } from "../hooks/useAuth";
+
+interface UserInput {
+  username: string;
+  password: string;
+}
 
 function Login() {
-  let [userInput, setUserInput] = useState<User>({
+  const authContext = useAuth();
+  let [userInput, setUserInput] = useState<UserInput>({
     username: "",
     password: "",
   });
 
-  function handleSubmit(event: any) {
+  async function handleSubmit(event: any) {
     event.preventDefault();
-    authService.signIn(userInput).then((token) => console.log(token));
+    try {
+      authContext.SignIn(userInput.username, userInput.password);
+      setUserInput({ username: "", password: "" });
+    } catch (error) {
+      !error ? console.log("No server response") : console.log(error);
+    }
   }
 
   function handleUsernameChange(input: string) {

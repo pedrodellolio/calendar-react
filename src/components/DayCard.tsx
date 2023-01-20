@@ -1,13 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import {
-  deleteTask,
-  getTaskById,
-  postTask,
-  updateTask,
-} from "../api/services/TaskService";
+import calendarService from "../api/services/TaskService";
 import { getMonthName } from "../constants/monthNames";
-import { CalendarTask, Day } from "../models/models";
+import { useAuth } from "../hooks/useAuth";
+import { CalendarTask, Day } from "../models/Calendar";
 
 interface Props {
   currentYear: number;
@@ -20,6 +16,7 @@ interface Props {
 }
 
 function DayCard(props: Props) {
+  const authContext = useAuth();
   let [isOpen, setIsOpen] = useState(false);
   let [currentTask, setCurrentTask] = useState({
     id: 0,
@@ -27,7 +24,6 @@ function DayCard(props: Props) {
     description: "",
     startDate: new Date(),
     endDate: new Date(),
-    user: { username: "Pedro" },
   } as CalendarTask);
 
   function closeModal() {
@@ -42,7 +38,6 @@ function DayCard(props: Props) {
         description: "",
         startDate: new Date(),
         endDate: new Date(),
-        user: { username: "Pedro" },
       } as CalendarTask;
     }
     setCurrentTask(task);
@@ -78,37 +73,42 @@ function DayCard(props: Props) {
     });
   };
 
-  const saveOrUpdateTask = (event: any) => {
+  async function saveOrUpdateTask(event: any) {
     event.preventDefault();
+
+    if (!authContext.isAuthenticated)
+      throw new Error("Sign in to create or update a new task");
+
+    //link task with the user logged in
+    setCurrentTask((prevState) => {
+      return { ...prevState, user: authContext.user };
+    });
+
     if (currentTask.id === 0) {
-      // currentTask.userId = currentTask.user.id;
-      console.log(currentTask);
-      postTask(currentTask).then((task) => {
-        if (task != null) {
-          console.log(task);
-          const daysInCurrentMonth = props.daysInCurrentMonth;
-          daysInCurrentMonth[props.dayOfMonth].tasks.push(task);
-
-          props.updateDaysInCurrentMonth(daysInCurrentMonth);
-        }
-
-        props.updateCurrentMonth(props.monthOfYear);
-      });
+      //create new task
+      const response = await calendarService.postTask(currentTask);
+      if (response != null) {
+        const daysInCurrentMonth = props.daysInCurrentMonth;
+        daysInCurrentMonth[props.dayOfMonth].tasks.push(response);
+        props.updateDaysInCurrentMonth(daysInCurrentMonth);
+      }
+      props.updateCurrentMonth(props.monthOfYear);
     } else {
-      updateTask(currentTask);
+      //update existing task
+      calendarService.updateTask(currentTask);
     }
     closeModal();
-  };
+  }
 
   const removeTask = () => {
-    deleteTask(currentTask.id).then(() => {
+    calendarService.deleteTask(currentTask.id).then(() => {
       props.updateCurrentMonth(props.monthOfYear);
     });
     closeModal();
   };
 
   const handleTaskClick = async (taskId: number) => {
-    const task = await getTaskById(taskId);
+    const task = await calendarService.getTaskById(taskId);
     // console.log(task);
     openModal(task);
   };

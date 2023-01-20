@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -7,6 +7,7 @@ import Calendar from "./routes/Calendar";
 import { ErrorPage } from "./errorPage";
 import Root from "./routes/Root";
 import Login from "./routes/Login";
+import AuthContext, { AuthProvider } from "./context/AuthContext";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

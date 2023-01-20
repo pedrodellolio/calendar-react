@@ -1,6 +1,9 @@
+import { useAuth } from "../hooks/useAuth";
 import Calendar from "./Calendar";
+import Login from "./Login";
 
 export default function Root() {
+  const authContext = useAuth();
   return (
     <>
       <nav>
@@ -14,9 +17,7 @@ export default function Root() {
           </li>
         </ul>
       </nav>
-      <div>
-        <Calendar />
-      </div>
+      <div>{authContext.isAuthenticated ? <Calendar /> : <Login />}</div>
     </>
   );
 }
