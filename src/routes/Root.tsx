@@ -6,7 +6,7 @@ export default function Root() {
   const authContext = useAuth();
   return (
     <>
-      <nav>
+      {/* <nav>
         <ul className="flex">
           <li>
             <a href={`/login`}>Login</a>
@@ -16,7 +16,7 @@ export default function Root() {
             <a href={`/calendar`}>Calendar</a>
           </li>
         </ul>
-      </nav>
+      </nav> */}
       <div>{authContext.isAuthenticated ? <Calendar /> : <Login />}</div>
     </>
   );

@@ -9,8 +9,8 @@ interface UserInput {
 function Login() {
   const authContext = useAuth();
   let [userInput, setUserInput] = useState<UserInput>({
-    username: "",
-    password: "",
+    username: "usuarioTeste",
+    password: "Senha123!",
   });
 
   async function handleSubmit(event: any) {
@@ -43,7 +43,7 @@ function Login() {
           <input
             type="text"
             placeholder="Username"
-            className="border"
+            className="border rounded-sm p-2 bg-purple-800"
             value={userInput.username}
             onChange={(event) => handleUsernameChange(event.target.value)}
             autoFocus
@@ -54,14 +54,14 @@ function Login() {
           <input
             type="password"
             placeholder="Password"
-            className="border"
+            className="border rounded-sm p-2 bg-purple-800"
             value={userInput.password}
             onChange={(event) => handlePasswordChange(event.target.value)}
           />
         </div>
         <div className="mt-4">
-          <button className="rounded-md p-2 bg-blue-700 text-white">
-            Login
+          <button className="rounded-md px-4 py-2 bg-blue-700 text-white hover:bg-blue-800">
+            Sign in
           </button>
         </div>
       </form>

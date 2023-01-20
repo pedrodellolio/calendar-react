@@ -2,14 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import api from "../api/services/Api";
 import DayCard from "../components/DayCard";
+import Header from "../components/Header";
 import { MONTH_COUNT } from "../constants/common";
 import { MONTHS } from "../constants/monthNames";
-import AuthContext from "../context/AuthContext";
 import { useAuth } from "../hooks/useAuth";
 import { Day } from "../models/Calendar";
 
 function Calendar() {
-  const authContext = useAuth();
   let [currentYear, setCurrentYear] = useState<number>(2023);
   let [daysInCurrentMonth, setDaysInCurrentMonth] = useState([] as Day[]);
   let [currentMonthIndex, setCurrentMonthIndex] = useState<number>(0); //0- janeiro; 11-dezembro
@@ -23,7 +22,7 @@ function Calendar() {
   useEffect(() => {
     const updateDayTasks = async (date: Date) => {
       const response = await api.get(
-        "/calendar" + "?date=" + date.toISOString()
+        "/calendar/date/" + date.toISOString()
       );
       return response.data;
     };
@@ -69,18 +68,17 @@ function Calendar() {
     });
   }
 
-  console.log(authContext.isAuthenticated);
   return (
     <div
       className={
-        "flex flex-col mt-5 px-3 m-auto " +
+        "flex flex-col m-auto" +
         (true ? "opacity-100" : "opacity-100")
       }
     >
-      <div>
+      <Header/>
+      <div className="p-3">
         <div>
-          <span>Olá, {authContext.user?.username}</span>
-          <div className=" header mb-3 flex align-middle">
+          <div className="header mb-3 flex align-middle">
             <span className="w-20">{currentMonth}</span>
             <div className="mx-3 mt-0">
               <button
@@ -102,6 +100,7 @@ function Calendar() {
               </button>
             </div>
           </div>
+          <div className="w-full h-[1px] bg-[#212134]"></div>
           {daysInCurrentMonth.length === 0 ? (
             <div>Carregando...</div>
           ) : (
@@ -111,7 +110,7 @@ function Calendar() {
                   <DayCard
                     key={day.id}
                     currentYear={currentYear}
-                    monthOfYear={currentMonthIndex + 1}
+                    monthOfYear={currentMonthIndex}
                     dayOfMonth={day.number}
                     tasks={day.tasks}
                     updateCurrentMonth={updateCurrentMonth}

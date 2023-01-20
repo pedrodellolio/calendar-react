@@ -1,12 +1,11 @@
-import { User } from "./User";
-
 export interface CalendarTask {
   id: number;
   title: string;
   description: string;
-  startDate: Date;
-  endDate: Date;
-  user: User | null;
+  startDateInMilliseconds: number;
+  endDateInMilliseconds: number;
+  startDate?: Date;
+  endDate?: Date;
 }
 
 export interface Month {
