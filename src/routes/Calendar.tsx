@@ -100,7 +100,7 @@ function Calendar() {
               </button>
             </div>
           </div>
-          <div className="w-full h-[1px] bg-[#212134]"></div>
+          {/* <div className="w-full h-[1px] bg-[#212134]"></div> */}
           {daysInCurrentMonth.length === 0 ? (
             <div>Carregando...</div>
           ) : (

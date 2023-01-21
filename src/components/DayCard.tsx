@@ -111,11 +111,11 @@ function DayCard(props: Props) {
   return (
     <div>
       <div className="flex">
-        <div className="w-full DayCard border-x border-[#212134] border-y h-44">
+        <div className="w-full DayCard border-x border-gray-100 border-y h-44">
           <div className="flex flex-col justify-end p-1 px-3 w-full">
             <span
               onClick={() => openModal()}
-              className="cursor-pointer text-gray-300 font-normal"
+              className="cursor-pointer text-gray-800 font-normal"
             >
               {props.dayOfMonth}
             </span>
@@ -126,9 +126,9 @@ function DayCard(props: Props) {
                     onClick={() => handleTaskClick(task.id)}
                     key={task.id}
                     title={task.title}
-                    className="overflow-x-hidden cursor-pointer mt-2 bg-[#eea2ee1c] rounded-lg"
+                    className="overflow-x-hidden cursor-pointer mt-2 bg-blue-100 rounded-lg"
                   >
-                    <p className="p-2 text-[.9rem] whitespace-nowrap truncate text-[#f789e5] font-bold">
+                    <p className="p-2 text-[.9rem] whitespace-nowrap truncate text-blue-600 font-bold">
                       {task.title}
                     </p>
                   </div>
@@ -165,24 +165,24 @@ function DayCard(props: Props) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="bg-purple-900 w-full max-w-md transform overflow-hidden rounded-md p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="bg-white w-96 max-w-md transform overflow-hidden rounded-md p-6 text-left align-middle shadow-xl transition-all">
                   <form onSubmit={saveOrUpdateTask}>
                     <Dialog.Title
                       as="h3"
-                      className="mb-8 text-lg font-medium leading-6 text-gray-800"
+                      className="mb-8 text-lg font-medium w-full leading-6 text-gray-800"
                     >
                       <input
                         value={currentTask.title}
                         onChange={handleTitleChange}
-                        className="py-1 px-2 rounded-sm border bg-purple-800 border-zinc-700 text-white"
+                        className="py-1 px-2 w-full rounded-sm font-medium border border-gray-300 text-gray-700 focus:outline-none focus:border-blue-900 focus:border-2"
                         placeholder="New task"
                         autoFocus
                       ></input>
                     </Dialog.Title>
-                    <div className="mt-2">
+                    <div className="mt-2 w-full">
                       <div className="mb-8 flex items-center">
                         <p>
-                          {getMonthName(props.monthOfYear)}, {props.dayOfMonth}
+                          {getMonthName(props.monthOfYear)} {props.dayOfMonth}
                         </p>
                         <div className="mx-3">
                           <input
@@ -193,7 +193,7 @@ function DayCard(props: Props) {
                               minute: "2-digit",
                             })}
                             onChange={(event) => handleDateInput(1, event)}
-                            className="text-center py-1 px-2 rounded-sm border bg-purple-800 border-zinc-700 text-white"
+                            className="text-center py-1 px-2 rounded-sm border-b border-gray-300 text-gray-700 focus:outline-none focus:border-b-blue-700 focus:border-b-2"
                             type="time"
                           ></input>
                           <span className="mx-2">-</span>
@@ -205,7 +205,7 @@ function DayCard(props: Props) {
                               minute: "2-digit",
                             })}
                             onInput={(event) => handleDateInput(0, event)}
-                            className="py-1 px-2 rounded-sm border bg-purple-800 border-zinc-700 text-white"
+                            className="py-1 px-2 rounded-sm border-b border-gray-300 text-gray-700 focus:outline-none focus:border-b-blue-700 focus:border-b-2"
                             type="time"
                           ></input>
                         </div>
@@ -215,11 +215,10 @@ function DayCard(props: Props) {
                         <textarea
                           value={currentTask.description}
                           onChange={handleDescriptionChange}
-                          className="py-1 px-2 rounded-sm border bg-purple-900 border-zinc-700 text-white"
+                          className="py-1 px-2 w-full rounded-sm border border-gray-300 text-gray-700 focus:outline-none focus:border-blue-900 focus:border-2"
                         ></textarea>
                       </div>
                     </div>
-
                     <div className="mt-4">
                       <button
                         type="submit"

@@ -16,12 +16,13 @@ module.exports = {
         8: "8px",
       },
       colors: {
-        zinc: {
-          150: "#eee",
-        },
         purple: {
           800: "#212134",
           900: "#181826",
+        },
+        blue: {
+          100: "#dbeafe",
+          900: "#1e3a8a",
         },
       },
     },

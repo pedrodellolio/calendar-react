@@ -43,7 +43,7 @@ function Login() {
           <input
             type="text"
             placeholder="Username"
-            className="border rounded-sm p-2 bg-purple-800"
+            className="border rounded-sm p-2"
             value={userInput.username}
             onChange={(event) => handleUsernameChange(event.target.value)}
             autoFocus
@@ -54,7 +54,7 @@ function Login() {
           <input
             type="password"
             placeholder="Password"
-            className="border rounded-sm p-2 bg-purple-800"
+            className="border rounded-sm p-2 "
             value={userInput.password}
             onChange={(event) => handlePasswordChange(event.target.value)}
           />
